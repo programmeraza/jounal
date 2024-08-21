@@ -1,0 +1,12 @@
+.btn__plus {
+    width: 365px;
+    padding: 15px 0;
+    color: #fff;
+    background-color: #474545;
+    border: none;
+    outline: none;
+    transition: .5s;
+    &:hover {
+        background-color: #ffffff1c;
+    }
+}
