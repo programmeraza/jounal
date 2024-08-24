@@ -1,13 +1,57 @@
-import React, { Fragment } from 'react'
+import React, { useState, useRef } from 'react'
 import "./JournalForm.scss"
 
-const JournalForm = () => {
+function JournalForm({onSubmit}) {
+
+    const [errors, setErrors] = useState({})
+    const [disableValidation, setDisableValidation] = useState(false)
+
+    const addJournalItem = (e) => {
+        e.preventDefoult();
+        const formData = new formData(e.target);
+        const formProps = Object.fromEnteries(formData);
+
+        const requireFeilds = ['title', 'date', 'text'];
+        const newErrors = {};
+        requireFeilds.forEach(feild => {
+            if (!formProps[feild]) {
+                newErrors[feild] = true
+            }
+        });
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            onSubmit(formProps);
+        } else {
+            setDisableValidation(true);
+            setTimeout(() => {
+                setDisableValidation(false);
+                setErrors({});
+            }, 2000);
+        }
+    }
+
+    const onReset = () => {
+        localStorage.removeItem('data');
+        location.reload();
+    }
+
+    const inputTitle = useRef(null)
+    const inputDate = useRef(null)
+    const inputText = useRef(null)
+
+    const onButtonClick = () => {
+        inputTitle.current.value = '';
+        inputDate.current.value = '';
+        inputText.current.value = '';
+    }
+
   return (
     <>
     <form className="journal__form">
-        <div className="text__flex">
-            <input className='journal__form-text' type="text" placeholder='Напиши своё воспоминание' />
-            <button className='journal__btn'>
+        <div className={`text__flex ${errors.title && 'error'} ${disableValidation ? 'disable-validation' : ''}`} >
+            <input className='journal__form-text' type="text" placeholder='Напиши своё воспоминание' ref={inputTitle} />
+            <button className='journal__btn' onClick={onButtonClick}>
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g opacity="0.4">
                     <rect x="0.5" y="0.5" width="29" height="29" rx="14.5" stroke="white"/>
@@ -18,8 +62,8 @@ const JournalForm = () => {
                 </svg>
             </button>
         </div>
-        <div className="date__flex">
-            <input className='journal__form-date' type="date" />
+        <div className={`date__flex ${errors.date && 'error'} ${disableValidation ? 'disable-validation' : ''}`}>
+            <input className='journal__form-date' type="date" ref={inputDate} />
         </div>
         <div className="tag__flex">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -29,10 +73,10 @@ const JournalForm = () => {
         </svg>
             <input className='journal__form-tag' type="text" placeholder='Метки' />
         </div>
-        <textarea className='journal__form-textarea' placeholder='Напиши на заметку'></textarea>
+        <textarea className={`journal-form__textarea ${errors.text && 'textareaError'} ${disableValidation ? 'disable-validation' : ''}`} ref={inputText} placeholder='Напиши на заметку'></textarea>
         <div className="journal__btn-flex">
             <button className="btn__journal">Сохранить</button>
-            <button className="btn__journal">Очистить</button>
+            <button className="btn__journal" onClick={onReset}>Очистить</button>
         </div>
     </form>
     </>

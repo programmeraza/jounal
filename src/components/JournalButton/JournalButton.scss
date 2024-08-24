@@ -1,11 +1,16 @@
 .btn__plus {
     width: 365px;
-    padding: 15px 0;
     color: #fff;
     background-color: #474545;
     border: none;
     outline: none;
     transition: .5s;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 35px;
+    gap: 8px;
     &:hover {
         background-color: #ffffff1c;
     }
